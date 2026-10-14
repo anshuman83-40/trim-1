@@ -1,3 +1,9 @@
+<div align="center">
+
+<a href="https://github.com/caveman-ai/trim-1"><img src="docs/assets/banner.png" alt="Caveman / trim-1. The word TRIM-1 in solid pixel letters with a double-line shadow. Why read many line when few do trick. Agent read whole log to find one error. trim-1 keep the lines the ask need and drop the rest. Every kept line exact, nothing rewritten. Say this to shell: trim --query &quot;why fail&quot; build.log. How big is rock: 1.2 MB model, 7 ms for 5k tokens on one core, 0 GPUs" width="880"></a>
+
+</div>
+
 # trim-1
 
 trim-1 is a small model that decides which lines of a context an AI agent
