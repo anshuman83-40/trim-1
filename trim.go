@@ -27,6 +27,8 @@ const (
 	maxQueryBytes = 8 << 10
 )
 
+const MaxContextBytes = maxContextBytes
+
 // Policy turns line scores into a selection.
 type Policy struct {
 	// Floor keeps every line scoring at least this share of the context's

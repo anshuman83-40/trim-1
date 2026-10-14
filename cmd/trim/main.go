@@ -7,6 +7,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -32,14 +33,18 @@ func main() {
 		os.Exit(2)
 	}
 
-	var (
-		context []byte
-		err     error
-	)
+	src := io.Reader(os.Stdin)
 	if flag.NArg() == 1 {
-		context, err = os.ReadFile(flag.Arg(0))
-	} else {
-		context, err = io.ReadAll(os.Stdin)
+		f, err := os.Open(flag.Arg(0))
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "trim:", err)
+			os.Exit(1)
+		}
+		src = f
+	}
+	context, err := io.ReadAll(io.LimitReader(src, trim.MaxContextBytes+1))
+	if err == nil && len(context) > trim.MaxContextBytes {
+		err = errors.New("context over 8 MiB")
 	}
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "trim:", err)
