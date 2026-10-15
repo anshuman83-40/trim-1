@@ -169,7 +169,9 @@ func (p Policy) Apply(lines []string, scores []float64) (string, int) {
 			open = i
 		}
 	}
-	out, kept := render(lines, selectLines(scores, blank, indent, section, p))
+	// A CRLF context keeps its "\r" on every kept line; markers match it.
+	crlf := len(lines) > 0 && strings.HasSuffix(lines[0], "\r")
+	out, kept := render(lines, selectLines(scores, blank, indent, section, p), crlf)
 	if final {
 		out += "\n"
 	}
@@ -255,8 +257,9 @@ func allBlank(b []bool) bool {
 	return true
 }
 
-// render writes the kept lines verbatim and one marker line per removed run.
-func render(lines []string, keep []bool) (string, int) {
+// render writes the kept lines verbatim and one marker line per removed run,
+// ending each marker in "\r" when crlf is set.
+func render(lines []string, keep []bool, crlf bool) (string, int) {
 	var b strings.Builder
 	kept := 0
 	for i := 0; i < len(lines); {
@@ -274,6 +277,9 @@ func render(lines []string, keep []bool) (string, int) {
 			j++
 		}
 		b.WriteString(marker(j - i))
+		if crlf {
+			b.WriteByte('\r')
+		}
 		i = j
 	}
 	return b.String(), kept
