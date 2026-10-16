@@ -125,6 +125,10 @@ func TestCRLFMarkers(t *testing.T) {
 	if out, _ := p.Apply(lines, []float64{1, 0, 0, 0, 0}); out != "a\r\n… 3 lines …\r\n" {
 		t.Errorf("got %q", out)
 	}
+	// Without a final newline the last marker is unterminated, like a last kept line.
+	if out, _ := p.Apply(strings.Split("a\r\nb\r\nc", "\n"), []float64{1, 0, 0}); out != "a\r\n… 2 lines …" {
+		t.Errorf("got %q", out)
+	}
 	res := Compress(strings.ReplaceAll(logContext(), "\n", "\r\n"), logQuery, Options{})
 	if res.Unchanged {
 		t.Fatalf("CRLF log context returned unchanged: %s", res.Reason)
